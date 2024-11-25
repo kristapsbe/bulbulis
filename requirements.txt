@@ -1,0 +1,7 @@
+jupyterlab==4.3.1
+sentinelhub==3.11.1
+ipyleaflet==0.19.2
+xarray==2024.11.0
+rasterio==1.4.2
+dask==2024.11.2
+matplotlib==3.9.2
