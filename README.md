@@ -1,3 +1,5 @@
+https://github.com/eu-cdse/notebook-samples/tree/main
+
 ```bash
 python3 -m venv .venv
 ```
