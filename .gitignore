@@ -8,6 +8,7 @@ __pycache__/*
 
 data/*
 results/*
+water_data/*
 
 settings.py
 config.txt
