@@ -1,0 +1,79 @@
+{
+    "request": {
+        "headers": {
+            "accept": "image/tiff",
+            "content-type": "application/json"
+        },
+        "payload": {
+            "evalscript": "\n  function setup() {\n    return {\n      input: [\"VV\", \"dataMask\"],\n      output: { bands: 2, sampleType: \"FLOAT32\"}\n    }\n  }\n\n\n// visualizes decibels from -20 to +10\nfunction toDb(linear) {\n  var log = 10 * Math.log(linear) / Math.LN10\n  return Math.max(0, (log + 20) / 30)\n}\n\nfunction evaluatePixel(sample) {\n  var VV = sample.VV;\n\n  return [toDb(VV),sample.dataMask];\n}\n",
+            "input": {
+                "bounds": {
+                    "bbox": [
+                        5181828.722519568,
+                        3932570.281591888,
+                        5182471.341996554,
+                        3933585.491324492
+                    ],
+                    "properties": {
+                        "crs": "http://www.opengis.net/def/crs/EPSG/0/3035"
+                    }
+                },
+                "data": [
+                    {
+                        "dataFilter": {
+                            "acquisitionMode": "IW",
+                            "mosaickingOrder": "mostRecent",
+                            "orbitDirection": "ASCENDING",
+                            "polarization": "DV",
+                            "resolution": "HIGH",
+                            "timeRange": {
+                                "from": "2023-01-20T00:00:00Z",
+                                "to": "2023-02-03T23:59:59Z"
+                            }
+                        },
+                        "processing": {
+                            "backCoeff": "SIGMA0_ELLIPSOID",
+                            "demInstance": "COPERNICUS",
+                            "orthorectify": true,
+                            "speckleFilter": {
+                                "type": "LEE",
+                                "windowSizeX": 3,
+                                "windowSizeY": 3
+                            }
+                        },
+                        "type": "sentinel-1-grd"
+                    }
+                ]
+            },
+            "output": {
+                "responses": [
+                    {
+                        "format": {
+                            "type": "image/tiff"
+                        },
+                        "identifier": "default"
+                    }
+                ],
+                "resx": 20,
+                "resy": 20
+            }
+        },
+        "timestamp": "2024-11-30T17:11:22.466046",
+        "url": "https://sh.dataspace.copernicus.eu/api/v1/process"
+    },
+    "response": {
+        "elapsed": 0.235962,
+        "headers": {
+            "access-control-allow-credentials": "true",
+            "access-control-allow-headers": "origin,content-type,accept,accept-crs,authorization,cache-control",
+            "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH",
+            "access-control-allow-origin": "*",
+            "access-control-max-age": "3600",
+            "content-length": "6413",
+            "content-type": "image/tiff",
+            "date": "Sat, 30 Nov 2024 15:11:22 GMT",
+            "x-processingunits-spent": "0.026666667461395264"
+        },
+        "status_code": 200
+    }
+}
