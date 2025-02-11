@@ -40,6 +40,8 @@ info on which band is which https://docs.sentinel-hub.com/api/latest/data/sentin
 
 TODO: check KML file ([here](https://sentiwiki.copernicus.eu/__attachments/1692737/S2A_OPER_GIP_TILPAR_MPC__20151209T095117_V20150622T000000_21000101T000000_B00.zip?inst-v=c9602fd8-862c-4637-a9c5-f5e318bba7ca)
 
+scala book https://docs.scala-lang.org/scala3/book/introduction.html
+
 ## nice maps
 
 https://glad.earthengine.app/view/global-forest-change#bl=off;old=off;dl=1;lon=23.2497053844484;lat=56.753584887795995;zoom=9;
