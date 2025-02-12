@@ -1,4 +1,6 @@
-/data*
+data*
+forests*
+images*
 .ipynb_checkpoints/*
 settings.py
 __pycache__/*
