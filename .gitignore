@@ -1,3 +1,5 @@
+Sentinel2_true_color_base.jpeg
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
