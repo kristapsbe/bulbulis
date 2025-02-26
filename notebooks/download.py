@@ -45,18 +45,18 @@ data = {
     "password": password,
 }
 
+auth_response = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
+access_token = json.loads(auth_response.text)["access_token"]
+
+session = requests.Session()
+session.headers["Authorization"] = f"Bearer {access_token}"
+
 search_response = requests.get(search_query).json()
 ct = 0
 while True:
     result = pd.DataFrame.from_dict(search_response["value"])
 
     for i,r in result.iterrows():
-        response = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
-        access_token = json.loads(response.text)["access_token"]
-
-        session = requests.Session()
-        session.headers["Authorization"] = f"Bearer {access_token}"
-
         product_identifier = r["Id"]
         product_name = r["Name"]
 
@@ -64,6 +64,12 @@ while True:
         print(url)
 
         response = session.get(url, allow_redirects=False)
+        if response.status_code == 401:
+            auth_response = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
+            access_token = json.loads(auth_response.text)["access_token"]
+            session = requests.Session()
+            session.headers["Authorization"] = f"Bearer {access_token}"
+
         while response.status_code in (301, 302, 303, 307):
             url = response.headers["Location"]
             response = session.get(url, allow_redirects=False)
