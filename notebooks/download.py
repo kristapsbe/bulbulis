@@ -101,6 +101,9 @@ while True:
 
         bands = []
         for band_file in band_location:
+            if os.path.isfile(f"data/{band_file[-1]}"):
+                print("FILE ALREADY THERE - skipping", f"data/{band_file[-1]}")
+                continue
             url = f"{catalogue_odata_url}/Products({product_identifier})/{"/".join([f"Nodes({b})" for b in band_file])}/$value"
             response = session.get(url, allow_redirects=False)
             while response.status_code in (301, 302, 303, 307):
