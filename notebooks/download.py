@@ -27,8 +27,8 @@ max_cloud_cover = 1
 corners = list(itertools.product(["20.95", "28.25"], ["55.7", "58.05"])) # Latvia
 poly = [" ".join(corners[i]) for i in [0, 2, 3, 1, 0]]
 aoi = f"POLYGON(({",".join(poly)}))"
-search_period_start = "2015-06-23T00:00:00.000Z" # 2A mission launch https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2
-search_period_end = "2025-02-25T00:00:00.000Z"
+search_period_start = "2021-01-01T00:00:00.000Z" # 2A mission launch https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2
+search_period_end = "2023-01-01T00:00:00.000Z"
 
 search_query = f"{catalogue_odata_url}/Products?$filter=Collection/Name eq '{collection_name}' and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{product_type}') and OData.CSC.Intersects(area=geography'SRID=4326;{aoi}') and ContentDate/Start gt {search_period_start} and ContentDate/Start lt {search_period_end}"
 
