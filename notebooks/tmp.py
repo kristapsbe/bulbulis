@@ -1,8 +1,11 @@
 import sys
 import json
+import numpy as np
 import pandas as pd
 import requests
+import rasterio
 import itertools
+import matplotlib.image
 import xml.etree.ElementTree as ET
 
 from pathlib import Path
@@ -46,7 +49,7 @@ data = {
 }
 
 search_response = requests.get(search_query).json()
-ct = 0
+ct = 1
 while True:
     result = pd.DataFrame.from_dict(search_response["value"])
 
@@ -72,6 +75,7 @@ while True:
                 print(url)
         file = session.get(url, verify=False, allow_redirects=True)
         outfile = Path.home() / f"Projs/bulbulis/notebooks/data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
+        ct += 1 # making sure separate outfiles (?)
         outfile.write_bytes(file.content)
         print("OUTFILE", str(outfile))
         tree = ET.parse(str(outfile))
@@ -94,7 +98,35 @@ while True:
             bands.append(str(outfile))
             print("Saved:", band_file[-1])
 
-    ct += 1
+        # TODO: should probs get rid of this (?)
+        try:
+            red = rasterio.open([b for b in bands if "B04_10m" in b][0], driver="JP2OpenJPEG").read(1)
+            green = rasterio.open([b for b in bands if "B03_10m" in b][0], driver="JP2OpenJPEG").read(1)
+            blue = rasterio.open([b for b in bands if "B02_10m" in b][0], driver="JP2OpenJPEG").read(1)
+
+            gain = 2
+            red_n = np.clip(red * gain / 10000, 0, 1)
+            green_n = np.clip(green * gain / 10000, 0, 1)
+            blue_n = np.clip(blue * gain / 10000, 0, 1)
+            rgb_composite_n = np.dstack((red_n, green_n, blue_n))
+            #plt.imshow(rgb_composite_n)
+            outfile = f"{Path.home()}/Projs/bulbulis/notebooks/images/Sentinel2_{product_name}_true_color_base.jpeg"
+            matplotlib.image.imsave(outfile, rgb_composite_n)
+            print("Saved as:", outfile)
+
+            b04 = rasterio.open([b for b in bands if "B04_10m" in b][0], driver="JP2OpenJPEG").read(1)/10000
+            b08 = rasterio.open([b for b in bands if "B08_10m" in b][0], driver="JP2OpenJPEG").read(1)/10000
+            ndvi = ((b08-b04)/(b08+b04))
+            # Create composite image
+            clipped = np.clip(ndvi, 0.0, 1.0)
+            clipped[clipped < 0.6] = 0.0
+            rgb_composite_n = np.dstack((np.zeros(ndvi.shape), clipped, np.zeros(ndvi.shape)))
+            outfile = f"{Path.home()}/Projs/bulbulis/notebooks/forests/Sentinel2_{product_name}_true_color_base.jpeg"
+            matplotlib.image.imsave(outfile, rgb_composite_n)
+            print("Saved as:", outfile)
+        except BaseException as e:
+            print(f"ERROR: {product_name} failed with {e}")
+
     if '@odata.nextLink' in search_response:
         print("NEXT_LINK", search_response['@odata.nextLink'])
         print("NEXT_LINK", search_response['@odata.nextLink'].split("skip=")[0]+f"skip={ct*total_runners*20+runner*20}")
