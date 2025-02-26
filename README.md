@@ -18,6 +18,8 @@ https://sentinelhub-py.readthedocs.io/en/latest/examples/process_request.html
 
 https://shapps.dataspace.copernicus.eu/dashboard/#/
 
+quotas https://documentation.dataspace.copernicus.eu/Quotas.html#copernicus-general-users
+
 https://land.copernicus.eu/en
 
 https://sentinels.copernicus.eu/web/sentinel/view-data-product
