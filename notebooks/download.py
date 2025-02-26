@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import pandas as pd
@@ -64,11 +65,6 @@ while True:
         print(url)
 
         response = session.get(url, allow_redirects=False)
-        if response.status_code == 401:
-            auth_response = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
-            access_token = json.loads(auth_response.text)["access_token"]
-            session = requests.Session()
-            session.headers["Authorization"] = f"Bearer {access_token}"
 
         while response.status_code in (301, 302, 303, 307):
             url = response.headers["Location"]
@@ -76,7 +72,26 @@ while True:
             if response.status_code != 200:
                 print(response)
                 print(url)
+
+        if response.status_code == 401:
+            auth_response = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
+            access_token = json.loads(auth_response.text)["access_token"]
+            session = requests.Session()
+            session.headers["Authorization"] = f"Bearer {access_token}"
+
+            response = session.get(url, allow_redirects=False)
+
+            while response.status_code in (301, 302, 303, 307):
+                url = response.headers["Location"]
+                response = session.get(url, allow_redirects=False)
+                if response.status_code != 200:
+                    print(response)
+                    print(url)
+
         file = session.get(url, verify=False, allow_redirects=True)
+        fname = f"data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
+        if os.path.isfile(fname):
+            os.remove(fname)
         outfile = Path.home() / f"Projs/bulbulis/notebooks/data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
         outfile.write_bytes(file.content)
         print("OUTFILE", str(outfile))
