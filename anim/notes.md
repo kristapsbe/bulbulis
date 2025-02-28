@@ -1,0 +1,2 @@
+scp kristaps@192.168.72.182:/home/kristaps/Projs/bulbulis/notebooks/forest_frames/\*.jpeg forest_frames/
+scp kristaps@192.168.72.196:/home/kristaps/Projs/bulbulis/notebooks/true_color_frames/\*.jpeg true_color_frames/
