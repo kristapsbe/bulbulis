@@ -23,7 +23,7 @@ catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 
 collection_name = "SENTINEL-2"
 product_type = "S2MSI2A"
-max_cloud_cover = 50
+max_cloud_cover = 101
 #corners = list(itertools.product(["20.95", "28.25"], ["55.7", "58.05"])) # Latvia
 corners = list(itertools.product(["20.95", "28.25"], ["53.7", "59.85"])) # getting Estonia and Lithuania as well
 poly = [" ".join(corners[i]) for i in [0, 2, 3, 1, 0]]
