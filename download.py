@@ -10,14 +10,14 @@ from pathlib import Path
 from settings import username, password
 
 
-runner = 0
-total_runners = 1
+start_year = 2015
+end_year = 2026
 if len(sys.argv) > 2:
-    runner = int(sys.argv[1])
-    total_runners = int(sys.argv[2])
+    start_year = int(sys.argv[1])
+    end_year = int(sys.argv[2])
 
-print("runner", runner)
-print("total_runners", total_runners)
+print("start_year", start_year)
+print("end_year", end_year)
 
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 
@@ -28,17 +28,17 @@ max_cloud_cover = 101
 corners = list(itertools.product(["20.95", "28.25"], ["53.7", "59.85"])) # getting Estonia and Lithuania as well
 poly = [" ".join(corners[i]) for i in [0, 2, 3, 1, 0]]
 aoi = f"POLYGON(({",".join(poly)}))"
-search_period_start = "2015-06-23T00:00:00.000Z" # 2A mission launch https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2
-search_period_end = "2025-02-26T00:00:00.000Z"
-#search_period_start = "2021-01-01T00:00:00.000Z"
-#search_period_end = "2023-01-01T00:00:00.000Z"
+#search_period_start = "2015-06-23T00:00:00.000Z" # 2A mission launch https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2
+#search_period_end = "2025-02-26T00:00:00.000Z"
+search_period_start = f"{start_year}-01-01T00:00:00.000Z"
+search_period_end = f"{end_year}-01-01T00:00:00.000Z"
 
 search_query = f"{catalogue_odata_url}/Products?$filter=Collection/Name eq '{collection_name}' and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{product_type}') and OData.CSC.Intersects(area=geography'SRID=4326;{aoi}') and ContentDate/Start gt {search_period_start} and ContentDate/Start lt {search_period_end}"
 
 print(f"""\n{search_query.replace(' ', "%20")}\n""")
 
 # filter by cloud coverage
-search_query = f"{search_query} and Attributes/OData.CSC.DoubleAttribute/any(att:att/Name eq 'cloudCover' and att/OData.CSC.DoubleAttribute/Value le {max_cloud_cover})&$skip={runner*20}"
+search_query = f"{search_query} and Attributes/OData.CSC.DoubleAttribute/any(att:att/Name eq 'cloudCover' and att/OData.CSC.DoubleAttribute/Value le {max_cloud_cover})"
 print(f"""\n{search_query.replace(' ', "%20")}\n""")
 
 auth_server_url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
@@ -92,10 +92,10 @@ while True:
                     print(url)
 
         file = session.get(url, verify=False, allow_redirects=True)
-        fname = f"data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
+        fname = f"data/MTD_{product_name}_MSIL2A_{start_year}_{end_year}_{ct}.xml"
         if os.path.isfile(fname):
             os.remove(fname)
-        outfile = Path.home() / f"Projs/bulbulis/data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
+        outfile = Path.home() / f"Projs/bulbulis/data/MTD_{product_name}_MSIL2A_{start_year}_{end_year}_{ct}.xml"
         outfile.write_bytes(file.content)
         print("OUTFILE", str(outfile))
         tree = ET.parse(str(outfile))
@@ -124,7 +124,6 @@ while True:
     ct += 1
     if '@odata.nextLink' in search_response:
         print("NEXT_LINK", search_response['@odata.nextLink'])
-        print("NEXT_LINK", search_response['@odata.nextLink'].split("skip=")[0]+f"skip={ct*total_runners*20+runner*20}")
-        search_response = requests.get(search_response['@odata.nextLink'].split("skip=")[0]+f"skip={ct*total_runners*20+runner*20}").json()
+        search_response = requests.get(search_response['@odata.nextLink']).json()
     else:
         break
