@@ -98,29 +98,31 @@ while True:
         outfile = Path.home() / f"Projs/bulbulis/data/MTD_{product_name}_MSIL2A_{start_year}_{end_year}_{ct}.xml"
         outfile.write_bytes(file.content)
         print("OUTFILE", str(outfile))
-        tree = ET.parse(str(outfile))
-        root = tree.getroot()
-        band_location = [f"{product_name}/{e.text}.jp2".split("/") for e in root[0][0][12][0][0] if "B02_10m" in e.text or "B03_10m" in e.text or "B04_10m" in e.text or "B08_10m" in e.text or "SCL_20m" in e.text]
+        try:
+            tree = ET.parse(str(outfile))
+            root = tree.getroot()
+            band_location = [f"{product_name}/{e.text}.jp2".split("/") for e in root[0][0][12][0][0] if "B02_10m" in e.text or "B03_10m" in e.text or "B04_10m" in e.text or "B08_10m" in e.text or "SCL_20m" in e.text]
 
-        bands = []
-        for band_file in band_location:
-            if os.path.isfile(f"data/{band_file[-1]}"):
-                print("FILE ALREADY THERE - skipping", f"data/{band_file[-1]}")
-                continue
-            url = f"{catalogue_odata_url}/Products({product_identifier})/{"/".join([f"Nodes({b})" for b in band_file])}/$value"
-            response = session.get(url, allow_redirects=False)
-            while response.status_code in (301, 302, 303, 307):
-                url = response.headers["Location"]
+            bands = []
+            for band_file in band_location:
+                if os.path.isfile(f"data/{band_file[-1]}"):
+                    print("FILE ALREADY THERE - skipping", f"data/{band_file[-1]}")
+                    continue
+                url = f"{catalogue_odata_url}/Products({product_identifier})/{"/".join([f"Nodes({b})" for b in band_file])}/$value"
                 response = session.get(url, allow_redirects=False)
-                if response.status_code != 200:
-                    print(url)
-            file = session.get(url, verify=False, allow_redirects=True)
+                while response.status_code in (301, 302, 303, 307):
+                    url = response.headers["Location"]
+                    response = session.get(url, allow_redirects=False)
+                    if response.status_code != 200:
+                        print(url)
+                file = session.get(url, verify=False, allow_redirects=True)
 
-            outfile = Path.home() / f"Projs/bulbulis/data/{band_file[-1]}"
-            outfile.write_bytes(file.content)
-            bands.append(str(outfile))
-            print("Saved:", band_file[-1])
-
+                outfile = Path.home() / f"Projs/bulbulis/data/{band_file[-1]}"
+                outfile.write_bytes(file.content)
+                bands.append(str(outfile))
+                print("Saved:", band_file[-1])
+        except BaseException as e:
+            print("ERROR", e)
     ct += 1
     if '@odata.nextLink' in search_response:
         print("NEXT_LINK", search_response['@odata.nextLink'])
