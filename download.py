@@ -95,7 +95,7 @@ while True:
         fname = f"data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
         if os.path.isfile(fname):
             os.remove(fname)
-        outfile = Path.home() / f"Projs/bulbulis/notebooks/data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
+        outfile = Path.home() / f"Projs/bulbulis/data/MTD_{product_name}_MSIL2A_{ct*total_runners*20+runner*20}_{runner}_{total_runners}_{ct}.xml"
         outfile.write_bytes(file.content)
         print("OUTFILE", str(outfile))
         tree = ET.parse(str(outfile))
@@ -116,7 +116,7 @@ while True:
                     print(url)
             file = session.get(url, verify=False, allow_redirects=True)
 
-            outfile = Path.home() / f"Projs/bulbulis/notebooks/data/{band_file[-1]}"
+            outfile = Path.home() / f"Projs/bulbulis/data/{band_file[-1]}"
             outfile.write_bytes(file.content)
             bands.append(str(outfile))
             print("Saved:", band_file[-1])
