@@ -11,10 +11,9 @@ from settings import username, password
 
 
 start_year = 2015
-end_year = 2026
-if len(sys.argv) > 2:
+if len(sys.argv) > 1:
     start_year = int(sys.argv[1])
-    end_year = int(sys.argv[2])
+end_year = start_year+1
 
 print("start_year", start_year)
 print("end_year", end_year)
