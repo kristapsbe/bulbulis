@@ -44,12 +44,10 @@ TODO: check KML file ([here](https://sentiwiki.copernicus.eu/__attachments/16927
 
 scala book https://docs.scala-lang.org/scala3/book/introduction.html
 
+images to video - https://www.geeksforgeeks.org/python-create-video-using-multiple-images-using-opencv/
+
 ## nice maps
 
 https://glad.earthengine.app/view/global-forest-change#bl=off;old=off;dl=1;lon=23.2497053844484;lat=56.753584887795995;zoom=9;
 
 https://www.globalforestwatch.org/map/?map=eyJjZW50ZXIiOnsibGF0Ijo1Ni45MzUwNDQ2ODk3OTk2MywibG5nIjoyMy45OTE5ODE4MDE2NTM1OTh9LCJ6b29tIjo5Ljc4NDY1NjA1OTA4MjQ0NywiZGF0YXNldHMiOlt7ImRhdGFzZXQiOiJwb2xpdGljYWwtYm91bmRhcmllcyIsImxheWVycyI6WyJkaXNwdXRlZC1wb2xpdGljYWwtYm91bmRhcmllcyIsInBvbGl0aWNhbC1ib3VuZGFyaWVzIl0sIm9wYWNpdHkiOjEsInZpc2liaWxpdHkiOnRydWV9LHsiZGF0YXNldCI6InRyZWUtY292ZXItZ2Fpbi01eSIsImxheWVycyI6WyJ0cmVlLWNvdmVyLWdhaW4tNXkiXSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZSwidGltZWxpbmVQYXJhbXMiOnsic3RhcnREYXRlIjoiMjAxMC0wMS0wMSIsImVuZERhdGUiOiIyMDIwLTEyLTMxIiwidHJpbUVuZERhdGUiOiIyMDIwLTEyLTMxIn19LHsiZGF0YXNldCI6InRyZWUtY292ZXItbG9zcyIsImxheWVycyI6WyJ0cmVlLWNvdmVyLWxvc3MiXSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZSwidGltZWxpbmVQYXJhbXMiOnsic3RhcnREYXRlIjoiMjAxMC0wMS0wMSIsImVuZERhdGUiOiIyMDIzLTEyLTMxIiwidHJpbUVuZERhdGUiOiIyMDIzLTEyLTMxIn19LHsiZGF0YXNldCI6InRyZWUtY292ZXIiLCJsYXllcnMiOlsidHJlZS1jb3Zlci0yMDEwIl0sIm9wYWNpdHkiOjEsInZpc2liaWxpdHkiOnRydWV9XX0%3D&mapPrompts=eyJvcGVuIjp0cnVlLCJzdGVwc0tleSI6InJlY2VudEltYWdlcnkifQ%3D%3D
-
-# notes
-NOTE to self - indiv connection is not reachig 1gb/s - run a bunch of parallel python processes (8 ?)
-looks like 8 makes it unhappy - 4 seems to work
