@@ -46,6 +46,8 @@ scala book https://docs.scala-lang.org/scala3/book/introduction.html
 
 images to video - https://www.geeksforgeeks.org/python-create-video-using-multiple-images-using-opencv/
 
+https://www.frontiersin.org/journals/forests-and-global-change/articles/10.3389/ffgc.2024.1300060/full ?
+
 ## nice maps
 
 https://glad.earthengine.app/view/global-forest-change#bl=off;old=off;dl=1;lon=23.2497053844484;lat=56.753584887795995;zoom=9;
