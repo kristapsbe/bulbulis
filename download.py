@@ -91,10 +91,10 @@ while True:
                     print(url)
 
         file = session.get(url, verify=False, allow_redirects=True)
-        fname = f"data/MTD_{product_name}_MSIL2A_{start_year}_{end_year}_{ct}.xml"
+        fname = f"data/MTD_{product_name}_MSIL2A_{start_year}_{end_year}.xml"
         if os.path.isfile(fname):
             os.remove(fname)
-        outfile = Path.home() / f"Projs/bulbulis/data/MTD_{product_name}_MSIL2A_{start_year}_{end_year}_{ct}.xml"
+        outfile = Path.home() / f"Projs/bulbulis/{fname}"
         outfile.write_bytes(file.content)
         print("OUTFILE", str(outfile))
         try:
