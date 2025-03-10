@@ -93,37 +93,10 @@ for d in sorted(list(set(dates))):
         if d in files[k] and len(bands-set(files[k][d].keys())) == 0:
             fj = files[k][d]
             try:
-                try:
-                    scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
-                except BaseException as e:
-                    if os.path.isfile(fj["SCL"]):
-                        print("REMOVED", fj["SCL"])
-                        os.remove(fj["SCL"])
-                    raise e
-
-                try:
-                    c_red = np.clip(rasterio.open(fj["B04"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
-                except BaseException as e:
-                    if os.path.isfile(fj["B04"]):
-                        print("REMOVED", fj["B04"])
-                        os.remove(fj["B04"])
-                    raise e
-
-                try:
-                    c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
-                except BaseException as e:
-                    if os.path.isfile(fj["B03"]):
-                        print("REMOVED", fj["B03"])
-                        os.remove(fj["B03"])
-                    raise e
-
-                try:
-                    c_blue = np.clip(rasterio.open(fj["B02"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
-                except BaseException as e:
-                    if os.path.isfile(fj["B02"]):
-                        print("REMOVED", fj["B02"])
-                        os.remove(fj["B02"])
-                    raise e
+                scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
+                c_red = np.clip(rasterio.open(fj["B04"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
+                c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
+                c_blue = np.clip(rasterio.open(fj["B02"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
 
                 print(d, k)
                 v_offset = v[0]*(w-overlap)+lt_offset
@@ -150,37 +123,10 @@ for d in sorted(list(set(dates))):
         if d in files[k] and len(bands-set(files[k][d].keys())) == 0:
             fj = files[k][d]
             try:
-                try:
-                    scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
-                except BaseException as e:
-                    if os.path.isfile(fj["SCL"]):
-                        print("REMOVED", fj["SCL"])
-                        os.remove(fj["SCL"])
-                    raise e
-
-                try:
-                    c_red = np.clip(rasterio.open(fj["B04"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
-                except BaseException as e:
-                    if os.path.isfile(fj["B04"]):
-                        print("REMOVED", fj["B04"])
-                        os.remove(fj["B04"])
-                    raise e
-
-                try:
-                    c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
-                except BaseException as e:
-                    if os.path.isfile(fj["B03"]):
-                        print("REMOVED", fj["B03"])
-                        os.remove(fj["B03"])
-                    raise e
-
-                try:
-                    c_blue = np.clip(rasterio.open(fj["B02"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
-                except BaseException as e:
-                    if os.path.isfile(fj["B02"]):
-                        print("REMOVED", fj["B02"])
-                        os.remove(fj["B02"])
-                    raise e
+                scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
+                c_red = np.clip(rasterio.open(fj["B04"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
+                c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
+                c_blue = np.clip(rasterio.open(fj["B02"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
 
                 print(d, k)
                 v_offset = v[0]*(w-overlap)
