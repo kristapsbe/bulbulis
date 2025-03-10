@@ -100,12 +100,16 @@ while True:
         try:
             tree = ET.parse(str(outfile))
             root = tree.getroot()
-            band_location = [f"{product_name}/{e.text}.jp2".split("/") for e in root[0][0][12][0][0] if "B02_10m" in e.text or "B03_10m" in e.text or "B04_10m" in e.text or "B08_10m" in e.text or "SCL_20m" in e.text]
+            # pivoting to 20m files to save disk space, B08 is only available at 10m - will zoom and hope that it works well enough
+            band_location = [f"{product_name}/{e.text}.jp2".split("/") for e in root[0][0][12][0][0] if "B02_20m" in e.text or "B03_20m" in e.text or "B04_20m" in e.text or "B08_10m" in e.text or "SCL_20m" in e.text]
 
             bands = []
             for band_file in band_location:
                 if os.path.isfile(f"data/{band_file[-1]}"):
                     print("FILE ALREADY THERE - skipping", f"data/{band_file[-1]}")
+                    continue
+                if os.path.isfile(f"data_verified/{band_file[-1]}"):
+                    print("FILE ALREADY THERE - skipping", f"data_verified/{band_file[-1]}")
                     continue
                 url = f"{catalogue_odata_url}/Products({product_identifier})/{"/".join([f"Nodes({b})" for b in band_file])}/$value"
                 response = session.get(url, allow_redirects=False)
