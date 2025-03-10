@@ -12,21 +12,16 @@ from pathlib import Path
 from scipy.ndimage import zoom, rotate
 
 
+bands = {'B02', 'B03', 'B04', 'SCL'}
 files = {}
-
 for f in os.listdir("data_verified"):
     if ".jp2" in f:
-        parts = f.split("_")
-        if parts[0] not in files:
-            files[parts[0]] = {}
-        if parts[1] not in files[parts[0]]:
-            files[parts[0]][parts[1]] = {}
-        files[parts[0]][parts[1]][parts[2]] = f"data_verified/{f}"
-
-dates = []
-for f in files.values():
-    dates += list(f.keys())
-dates = sorted(list(set(dates)))
+        p = f.split("_")
+        if p[1] not in files:
+            files[p[1]] = {}
+        if p[0] not in files[p[1]]:
+            files[p[1]][p[0]] = {}
+        files[p[1]][p[0]][p[2]] = f"data_verified/{f}"
 
 gain = 2
 deg = 5.1
@@ -79,11 +74,11 @@ files = {k:v for k,v in files.items() if k in valid_files}
 
 prev_day = ""
 
-for d in dates:
+for d in sorted(list(files.keys())):
     print(d)
     for k,v in left_offsets.items():
-        if d in files[k]:
-            fj = files[k][d]
+        if k in files[d] and files[d][k] == bands:
+            fj = files[d][k]
             try:
                 try:
                     scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
@@ -102,7 +97,7 @@ for d in dates:
                     raise e
 
                 try:
-                    c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1) 
+                    c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
                 except BaseException as e:
                     if os.path.isfile(fj["B03"]):
                         print("REMOVED", fj["B03"])
@@ -121,7 +116,7 @@ for d in dates:
                 v_offset = v[0]*(w-overlap)+lt_offset
                 h_offset = v[1]*(w-overlap)
                 mask = ((scl != 0) & (scl != 1) & (scl != 3) & (scl != 7) & (scl != 8) & (scl != 9) & (scl != 10))
-    
+
                 composite[v_offset:v_offset+w, h_offset:h_offset+w, 0][mask] = c_red[mask]
                 composite[v_offset:v_offset+w, h_offset:h_offset+w, 1][mask] = c_green[mask]
                 composite[v_offset:v_offset+w, h_offset:h_offset+w, 2][mask] = c_blue[mask]
@@ -135,12 +130,12 @@ for d in dates:
     #    matplotlib.image.imsave(f"{Path.home()}/Projs/bulbulis/true_color_frames/{d[:8]}_left_only.jpeg", scaled_down)
     #else:
     #    print(f"skipping save {prev_day} = {d}")
-    
+
     t_scl = np.zeros((bc_h, bc_w))
     did_right = False
     for k,v in right_offsets.items():
-        if d in files[k]:
-            fj = files[k][d]
+        if k in files[d] and files[d][k] == bands:
+            fj = files[d][k]
             try:
                 try:
                     scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
@@ -159,7 +154,7 @@ for d in dates:
                     raise e
 
                 try:
-                    c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1) 
+                    c_green = np.clip(rasterio.open(fj["B03"], driver="JP2OpenJPEG").read(1)*gain/10000, 0, 1)
                 except BaseException as e:
                     if os.path.isfile(fj["B03"]):
                         print("REMOVED", fj["B03"])
@@ -189,12 +184,12 @@ for d in dates:
     if did_right:
         mask = ((t_scl == 0) | (t_scl == 1) | (t_scl == 3) | (t_scl == 7) | (t_scl == 8) | (t_scl == 9) | (t_scl == 10))
         t_scl[mask] = -999 # rotation ends up interpolating values - need something exteme so that I can still tell where the clouds are
-        
+
         temp_right = rotate(right, deg, reshape=False)
         t_scl = rotate(t_scl, deg, reshape=False)
         mask = ((t_scl > 0))
         composite[:bc_h, bc_w-bc_offset:, :][mask] = temp_right[mask] # no point in clipping here since I'll need to clip after zooming anyhow
-    
+
     if prev_day != d[:8]:
         prev_day = d[:8]
         print("scaling down")
@@ -203,4 +198,3 @@ for d in dates:
         matplotlib.image.imsave(f"{Path.home()}/Projs/bulbulis/true_color_frames/{d[:8]}.jpeg", scaled_down)
     else:
         print(f"skipping save {prev_day} = {d}")
-
