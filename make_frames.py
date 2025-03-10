@@ -12,17 +12,6 @@ from pathlib import Path
 from scipy.ndimage import zoom, rotate
 
 
-bands = {'B02', 'B03', 'B04', 'SCL'}
-files = {}
-for f in os.listdir("data_verified"):
-    if ".jp2" in f:
-        p = f.split("_")
-        if p[1] not in files:
-            files[p[1]] = {}
-        if p[0] not in files[p[1]]:
-            files[p[1]][p[0]] = {}
-        files[p[1]][p[0]][p[2]] = f"data_verified/{f}"
-
 gain = 2
 deg = 5.1
 lt_offset = 1230//2 # rotation takes an age with full sized images - going with SCL size instead
@@ -70,15 +59,39 @@ right = np.dstack((np.zeros((bc_h, bc_w)), np.zeros((bc_h, bc_w)), np.zeros((bc_
 composite = np.dstack((np.zeros((t_h, t_w)), np.zeros((t_h, t_w)), np.zeros((t_h, t_w))))
 
 valid_files = set(list(left_offsets.keys())+list(right_offsets.keys()))
-files = {k:v for k,v in files.items() if k in valid_files}
+
+temp_files = {}
+for f in os.listdir("data_verified"):
+    if ".jp2" in f:
+        p = f.split("_")
+        if p[0] in valid_files:
+            if p[0] not in temp_files:
+                temp_files[p[0]] = {}
+            if p[1] not in temp_files[p[0]]:
+                temp_files[p[0]][p[1]] = {}
+            temp_files[p[0]][p[1]][p[2]] = f"data_verified/{f}"
+
+bands = {'B02', 'B03', 'B04', 'SCL'}
+files = {}
+for ki,vi in temp_files.items():
+    for kj,vj in vi.items():
+        if len(bands-set(vj.keys())) == 0:
+            if ki not in files:
+                files[ki] = {}
+            if kj not in files[ki]:
+                files[ki][kj] = {}
+            files[ki][kj] = vj
+
+dates = []
+for f in files.values():
+    dates += list(f.keys())
 
 prev_day = ""
-
-for d in sorted(list(files.keys())):
+for d in sorted(list(set(dates))):
     print(d)
     for k,v in left_offsets.items():
-        if k in files[d] and files[d][k] == bands:
-            fj = files[d][k]
+        if d in files[k] and len(bands-set(files[k][d].keys())) == 0:
+            fj = files[k][d]
             try:
                 try:
                     scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
@@ -134,8 +147,8 @@ for d in sorted(list(files.keys())):
     t_scl = np.zeros((bc_h, bc_w))
     did_right = False
     for k,v in right_offsets.items():
-        if k in files[d] and files[d][k] == bands:
-            fj = files[d][k]
+        if d in files[k] and len(bands-set(files[k][d].keys())) == 0:
+            fj = files[k][d]
             try:
                 try:
                     scl = rasterio.open(fj["SCL"], driver="JP2OpenJPEG").read(1)
