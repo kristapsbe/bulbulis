@@ -29,7 +29,7 @@ for f in files.values():
     dates += list(f.keys())
 dates = sorted(list(set(dates)))
 
-dates = [d for d in dates if d[:4] == str(target_year) or d[:6] in set([f"{prev_year}{str(i).zfill(2)}" for i in range(8, 13)])]
+dates = [d for d in dates if d[:4] in {str(target_year), str(target_year+1)} or d[:6] in set([f"{prev_year}{str(i).zfill(2)}" for i in range(8, 13)])]
 
 gain = 2
 deg = 5.1
