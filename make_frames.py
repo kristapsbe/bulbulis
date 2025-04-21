@@ -11,7 +11,7 @@ from scipy.ndimage import zoom, rotate
 target_year = 2018
 if len(sys.argv) > 1:
     target_year = int(sys.argv[1])
-prev_year = start_year-1
+prev_year = target_year-1
 
 files = {}
 
